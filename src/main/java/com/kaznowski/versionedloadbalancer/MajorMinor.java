@@ -1,11 +1,13 @@
 package com.kaznowski.versionedloadbalancer;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.NullArgumentException;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+@Log4j2
 public class MajorMinor implements Comparable<MajorMinor> {
 
   private static final Pattern REGEX_MAJOR = Pattern.compile("v([0-9]*)");
@@ -40,7 +42,7 @@ public class MajorMinor implements Comparable<MajorMinor> {
     if (o == null || getClass() != o.getClass()) return false;
     MajorMinor that = (MajorMinor) o;
     return Objects.equals(major, that.major) &&
-            Objects.equals(minor, that.minor);
+        Objects.equals(minor, that.minor);
   }
 
   @Override
@@ -50,16 +52,29 @@ public class MajorMinor implements Comparable<MajorMinor> {
 
   @Override
   public int compareTo(MajorMinor o) {
-    int thisVersion = major*10000 + Optional.ofNullable(minor).orElse(9000);
-    int thatVersion = o.major*1000 + Optional.ofNullable(o.minor).orElse(9000);
-    return thisVersion-thatVersion;
+    if (o.major > this.major) {
+      return -1;
+    }
+    if (o.major < this.major) {
+      return 1;
+    }
+    if (o.minor==null) {
+      if (this.minor==null) {
+        return 0;
+      }
+      return -1;
+    }
+    if (this.minor==null) {
+      return 1;
+    }
+    return this.minor.compareTo(o.minor);
   }
 
   @Override
   public String toString() {
     return "MajorMinor{" +
-            "major=" + major +
-            ", minor=" + minor +
-            '}';
+        "major=" + major +
+        ", minor=" + minor +
+        '}';
   }
 }

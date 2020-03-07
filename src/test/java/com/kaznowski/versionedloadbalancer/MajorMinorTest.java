@@ -51,6 +51,6 @@ public class MajorMinorTest {
     Collections.shuffle(shuffled);
 
     Collections.sort(shuffled);
-    assertThat(shuffled.toString(), shuffled, IsIterableContainingInOrder.contains(expectedVersions));
+    assertThat(shuffled, IsIterableContainingInOrder.contains(expectedVersions.toArray()));
   }
 }
